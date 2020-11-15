@@ -1,0 +1,289 @@
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+/* Private CSS variables */
+
+:root {
+  --jp-private-new-launcher-top-padding: 16px;
+  --jp-private-new-launcher-side-padding: 32px;
+  --jp-private-new-launcher-card-size: 130px;
+  --jp-private-new-launcher-card-label-height: 32px;
+  --jp-private-new-launcher-card-icon-height: 68px;
+  --jp-private-new-launcher-large-icon-size: 52px;
+  --jp-private-new-launcher-small-icon-size: 32px;
+}
+
+/* Launcher */
+
+.jp-NewLauncher {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background: var(--jp-layout-color0);
+  box-sizing: border-box;
+  min-width: 120px;
+  min-height: 120px;
+  /* This is needed so that all font sizing of children done in ems is
+     * relative to this base size */
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-NewLauncher-body {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Toolbar, search bar */
+.jp-NewLauncher-toolbar {
+  height: 50px;
+  border-bottom: var(--jp-border-width) solid var(--jp-toolbar-border-color);
+  box-shadow: var(--jp-toolbar-box-shadow);
+  background: var(--jp-toolbar-background);
+  display: flex;
+  align-items: center;
+}
+
+.jp-NewLauncher-search {
+  padding-left: var(--jp-private-new-launcher-side-padding);
+  position: relative;
+  margin-right: 32px;
+}
+
+.jp-NewLauncher-search-wrapper {
+  background-color: var(--jp-input-active-background);
+  height: 32px;
+  box-shadow: inset 0 0 0 1px var(--jp-input-active-box-shadow-color),
+    inset 0 0 0 3px var(--jp-input-active-box-shadow-color);
+  padding: 0px 9px;
+}
+
+.jp-NewLauncher-search-wrapper::after {
+  content: ' ';
+  color: white;
+  background-color: var(--jp-brand-color1);
+  position: absolute;
+  height: 32px;
+  width: 12px;
+  padding: 0px 12px;
+  background-image: var(--jp-icon-search-white);
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.jp-NewLauncher-search-input {
+  width: 150px;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: var(--jp-ui-font-size1);
+  color: var(--jp-ui-font-color0);
+  line-height: var(--jp-private-commandpalette-search-height);
+}
+
+.jp-NewLauncher-search-input:-webkit-input-placeholder {
+  color: var(--jp-ui-font-color3);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-NewLauncher-search-input:-moz-placeholder {
+  color: var(--jp-ui-font-color3);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-NewLauncher-search-input:-ms-input-placeholder {
+  color: var(--jp-ui-font-color3);
+  font-size: var(--jp-ui-font-size1);
+}
+
+.jp-NewLauncher-home {
+  display: flex;
+  align-items: center;
+}
+
+.jp-NewLauncher-cwd {
+  display: flex;
+  width: calc(100% - 250px);
+}
+
+.jp-NewLauncher-cwd h3 {
+  font-size: var(--jp-ui-font-size2);
+  font-weight: normal;
+  color: var(--jp-ui-font-color1);
+  margin: 1em 0px;
+  overflow: hidden;
+  direction: rtl;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.jp-NewLauncher-content {
+  height: 100%;
+  padding-top: var(--jp-private-new-launcher-top-padding);
+  padding-left: var(--jp-private-new-launcher-side-padding);
+  padding-right: var(--jp-private-new-launcher-side-padding);
+  box-sizing: border-box;
+}
+
+/* Launcher section */
+
+.jp-NewLauncher-section {
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 12px;
+}
+
+.jp-NewLauncher-sectionHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  /* This is custom tuned to get the section header to align with the cards */
+  margin-left: 5px;
+  border-bottom: 1px solid var(--jp-border-color2);
+  padding-bottom: 0px;
+  margin-bottom: 8px;
+}
+
+.jp-NewLauncher-sectionHeader .jp-NewLauncher-sectionIcon {
+  box-sizing: border-box;
+  margin-right: 12px;
+  height: var(--jp-private-new-launcher-small-icon-size);
+  width: var(--jp-private-new-launcher-small-icon-size);
+  background-size: var(--jp-private-new-launcher-small-icon-size)
+    var(--jp-private-new-launcher-small-icon-size);
+}
+
+.jp-NewLauncher-sectionTitle {
+  font-size: var(--jp-ui-font-size2);
+  font-weight: normal;
+  color: var(--jp-ui-font-color1);
+  box-sizing: border-box;
+}
+
+/* Launcher cards */
+
+.jp-NewLauncher-cardContainer {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.jp-NewLauncherCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  width: var(--jp-private-new-launcher-card-size);
+  height: var(--jp-private-new-launcher-card-size);
+  margin: 8px;
+  padding: 0px;
+  border: 1px solid var(--jp-border-color2);
+  background: var(--jp-layout-color0);
+  box-shadow: var(--jp-elevation-z2);
+  transition: 0.2s box-shadow;
+  border-radius: var(--jp-border-radius);
+}
+
+.jp-NewLauncherCard:hover {
+  box-shadow: var(--jp-elevation-z6);
+  background: var(--jp-layout-color1);
+}
+
+.jp-NewLauncherCard-icon {
+  width: 100%;
+  height: var(--jp-private-new-launcher-card-icon-height);
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jp-NewLauncherCard-label {
+  width: 100%;
+  height: var(--jp-private-new-launcher-card-label-height);
+  padding: 0 4px 4px 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.jp-NewLauncherCard-label p {
+  height: 28px;
+  word-break: break-word;
+  text-align: center;
+  color: var(--jp-ui-font-color1);
+  line-height: 14px;
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.jp-NewLauncherCard-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.jp-NewLauncher-option-button {
+  flex: 1 1 auto;
+  height: 20px;
+  color: rgb(0, 132, 255);
+  font-size: 12px;
+  text-align: center;
+}
+
+.jp-NewLauncher-option-button-text {
+  width: 100%;
+}
+
+.jp-NewLauncher-option-button:hover {
+  background: var(--jp-layout-color2);
+}
+
+.jp-NewLauncherCard:hover .jp-NewLauncherCard-options {
+  background: var(--jp-layout-color2);
+}
+
+.jp-NewLauncherCard .jp-NewLauncherCard-options:hover {
+  background: transparent;
+}
+
+.jp-NewLauncher-option-button:last-child {
+  background: var(--jp-layout-color1);
+}
+
+.jp-NewLauncher-option-button:last-child:hover {
+  background: var(--jp-layout-color2);
+}
+
+/* Icons, kernel icons */
+
+.jp-NewLauncher-icon {
+  width: 100%;
+  height: var(--jp-private-new-launcher-card-icon-height);
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jp-NewLauncher-kernelIcon {
+  width: var(--jp-private-new-launcher-large-icon-size);
+  height: var(--jp-private-new-launcher-large-icon-size);
+  margin: 0px;
+  padding: 0px;
+}
