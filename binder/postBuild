@@ -43,6 +43,7 @@ _("jupyter", "labextension", "install", "--no-build", "--debug",
         if ext.strip() and not ext.strip().startswith("#")
     ]
 )
+_("jupyter", "labextension", "disable", "@jupyterlab/launcher-extension")
 
 # verify the list of extensions
 _("jupyter", "labextension", "list")

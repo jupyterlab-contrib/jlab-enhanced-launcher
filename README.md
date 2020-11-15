@@ -1,6 +1,6 @@
 # launcher
 
-![Github Actions Status](https://github.com/fcollonval/jupyterlab-enhanced/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jupyterlab-enhanced/master?urlpath=lab)
+![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab)
 
 A enhanced launcher for JupyterLab
 
@@ -13,7 +13,8 @@ A enhanced launcher for JupyterLab
 ## Install
 
 ```bash
-jupyter labextension install launcher
+jupyter labextension install @jlab-enhance/launcher
+jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
 ## Contributing
@@ -34,6 +35,7 @@ jlpm
 jlpm build
 # Link your development version of the extension with JupyterLab
 jupyter labextension install .
+jupyter labextension disable @jupyterlab/launcher-extension
 # Rebuild Typescript source after making changes
 jlpm build
 # Rebuild JupyterLab after making any changes
@@ -54,6 +56,6 @@ Now every change will be built locally and bundled into JupyterLab. Be sure to r
 ### Uninstall
 
 ```bash
-
 jupyter labextension uninstall launcher
+jupyter labextension enable @jupyterlab/launcher-extension
 ```
