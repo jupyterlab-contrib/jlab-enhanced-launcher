@@ -1,0 +1,67 @@
+.jp-NewLauncher-content-main-Table {
+  width: 100%;
+}
+
+.jp-NewLauncher-Table-cardContainer {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.jp-NewLauncher-item-Table {
+  display: table-row;
+}
+
+.jp-NewLauncher-item-Table:hover {
+  background: var(--jp-layout-color2);
+}
+
+.jp-NewLauncher-item-Table:hover .jp-NewLauncher-options {
+  background: var(--jp-layout-color3);
+}
+
+.jp-NewLauncher-item-Table .jp-NewLauncher-options:hover {
+  background: transparent;
+}
+
+.jp-NewLauncher-item-Table .jp-NewLauncher-option-button:nth-child(2) {
+  background: var(--jp-layout-color0);
+}
+
+.jp-NewLauncher-item-Table:hover .jp-NewLauncher-option-button:nth-child(2) {
+  background: var(--jp-layout-color2);
+}
+
+.jp-NewLauncher-item-Table .jp-NewLauncher-option-button:hover {
+  background: var(--jp-layout-color3) !important;
+}
+
+.jp-NewLauncher-Table-Cell.jp-NewLauncher-label {
+  width: auto;
+  height: auto;
+  text-align: left;
+} 
+
+.jp-NewLauncher-Table-Cell.jp-NewLauncher-options-wrapper {
+  width: 25%;
+}
+
+.jp-NewLauncher-Table-Cell.jp-NewLauncherCard-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.jp-NewLauncher-Table-Cell.jp-NewLauncherCard-icon > div {
+  width: 16px;
+  height: 16px;
+}
+
+.jp-NewLauncher-item-Table .jp-NewLauncher-kernelIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.jp-NewLauncher-Table-Cell {
+  display: table-cell;
+  vertical-align: middle;
+}

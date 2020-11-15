@@ -34,6 +34,7 @@ import { AttachedProperty } from '@lumino/properties';
 import { Widget } from '@lumino/widgets';
 
 import * as React from 'react';
+import { viewListIcon, viewModuleIcon } from './icons';
 
 /**
  * Extension identifier
@@ -100,6 +101,19 @@ export class LauncherModel extends VDomModel implements ILauncher {
     return this._usageData;
   }
 
+  get viewMode(): 'cards' | 'table' {
+    return this._viewMode;
+  }
+  set viewMode(mode: 'cards' | 'table') {
+    const hasChanged = this._viewMode !== mode;
+    this._viewMode = mode;
+    if (this._state && hasChanged) {
+      this._state.save(`${EXTENSION_ID}:viewMode`, mode).catch(reason => {
+        console.error('Fail to save view mode', reason);
+      });
+    }
+  }
+
   /**
    * Add a command item to the launcher, and trigger re-render event for parent
    * widget.
@@ -137,10 +151,10 @@ export class LauncherModel extends VDomModel implements ILauncher {
     };
     if (this._state) {
       this._state
-        .save(`${EXTENSION_ID}:usage-data`, this._usageData as any)
+        .save(`${EXTENSION_ID}:usageData`, this._usageData as any)
         .catch((reason: Error) => {
           console.error(
-            `Failed to save ${EXTENSION_ID}:usage-data - ${reason.message}`,
+            `Failed to save ${EXTENSION_ID}:usageData - ${reason.message}`,
             reason
           );
         });
@@ -163,6 +177,7 @@ export class LauncherModel extends VDomModel implements ILauncher {
   private _items: ILauncher.IItemOptions[] = [];
   private _state: IStateDB | null = null;
   private _usageData: { [key: string]: IUsageData } = {};
+  private _viewMode: 'cards' | 'table' = 'cards';
 }
 
 /**
@@ -174,10 +189,10 @@ export class Launcher extends VDomRenderer<LauncherModel> {
    */
   constructor(options: INewLauncher.IOptions) {
     super(options.model);
+    this.addClass(LAUNCHER_CLASS);
     this._cwd = options.cwd;
     this._callback = options.callback;
     this._commands = options.commands;
-    this.addClass(LAUNCHER_CLASS);
   }
 
   /**
@@ -209,6 +224,8 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     if (!this.model) {
       return null;
     }
+
+    const mode = this.model.viewMode === 'cards' ? '' : '-Table';
 
     // First group-by categories
     const categories: {
@@ -292,7 +309,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
           <div className="jp-NewLauncher-sectionHeader">
             <h2 className="jp-NewLauncher-sectionTitle">Most Used</h2>
           </div>
-          <div className="jp-NewLauncher-cardContainer">
+          <div className={`jp-NewLauncher${mode}-cardContainer`}>
             {toArray(
               map(
                 mostUsedItems.slice(0, MAX_RECENT_CARDS),
@@ -339,7 +356,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
             />
             <h2 className="jp-NewLauncher-sectionTitle">{cat}</h2>
           </div>
-          <div className="jp-NewLauncher-cardContainer">
+          <div className={`jp-NewLauncher${mode}-cardContainer`}>
             {toArray(
               map(categories[cat], (items: INewLauncher.IItemOptions[]) => {
                 const item = items[0];
@@ -400,6 +417,34 @@ export class Launcher extends VDomRenderer<LauncherModel> {
               />
               {/* Trailing / because with use direction rtl for better ellipsis rendering */}
               <h3 title={this.cwd}>{`${this.cwd}/`}</h3>
+            </div>
+            <div className="jp-NewLauncher-view">
+              <button
+                disabled={this.model.viewMode === 'cards'}
+                onClick={() => {
+                  this.model.viewMode = 'cards';
+                  this.update();
+                }}
+              >
+                <viewModuleIcon.react
+                  tag="span"
+                  title="Card view"
+                  elementPosition="center"
+                />
+              </button>
+              <button
+                disabled={this.model.viewMode === 'table'}
+                onClick={() => {
+                  this.model.viewMode = 'table';
+                  this.update();
+                }}
+              >
+                <viewListIcon.react
+                  tag="span"
+                  title="Table view"
+                  elementPosition="center"
+                />
+              </button>
             </div>
           </div>
           <div className="jp-NewLauncher-content-main">{sections}</div>
@@ -464,6 +509,8 @@ function Card(
   commands: CommandRegistry,
   launcherCallback: (widget: Widget) => void
 ): React.ReactElement<any> {
+  const mode = launcher.model.viewMode === 'cards' ? '' : '-Table';
+
   // Get some properties of the first command
   const item = items[0];
   const command = item.command;
@@ -546,7 +593,7 @@ function Card(
   // Return the VDOM element.
   return (
     <div
-      className="jp-NewLauncherCard"
+      className={`jp-NewLauncher-item${mode}`}
       title={title}
       onClick={mainOnClick}
       onKeyPress={onkeypress}
@@ -554,7 +601,7 @@ function Card(
       data-category={item.category || 'Other'}
       key={Private.keyProperty.get(item)}
     >
-      <div className="jp-NewLauncherCard-icon">
+      <div className={`jp-NewLauncherCard-icon jp-NewLauncher${mode}-Cell`}>
         {kernel ? (
           item.kernelIconUrl ? (
             <img
@@ -574,10 +621,17 @@ function Card(
           />
         )}
       </div>
-      <div className="jp-NewLauncherCard-label" title={label}>
-        <p>{label}</p>
+      <div
+        className={`jp-NewLauncher-label jp-NewLauncher${mode}-Cell`}
+        title={label}
+      >
+        {label}
       </div>
-      <div className="jp-NewLauncherCard-options">{getOptions(items)}</div>
+      <div
+        className={`jp-NewLauncher-options-wrapper jp-NewLauncher${mode}-Cell`}
+      >
+        <div className="jp-NewLauncher-options">{getOptions(items)}</div>
+      </div>
     </div>
   );
 }

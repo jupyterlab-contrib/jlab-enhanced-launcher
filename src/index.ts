@@ -61,13 +61,20 @@ function activate(
   const model = new LauncherModel(state);
 
   if (state) {
-    Promise.all([state.fetch(`${EXTENSION_ID}:usage-data`), app.restored]).then(
-      ([usage]) => {
+    Promise.all([
+      state.fetch(`${EXTENSION_ID}:usageData`),
+      state.fetch(`${EXTENSION_ID}:viewMode`),
+      app.restored
+    ])
+      .then(([usage, mode]) => {
+        model.viewMode = (mode as any) || 'cards';
         for (const key in usage as any) {
           model.usage[key] = (usage as any)[key];
         }
-      }
-    );
+      })
+      .catch(reason => {
+        console.error('Fail to restore launcher usage data', reason);
+      });
   }
 
   commands.addCommand(CommandIDs.create, {

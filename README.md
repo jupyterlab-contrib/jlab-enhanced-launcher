@@ -2,9 +2,11 @@
 
 ![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab)
 
-A enhanced launcher for JupyterLab
+A enhanced launcher for JupyterLab.
 
+![Demo](enh_launcher.gif)
 
+This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
 ## Requirements
 
