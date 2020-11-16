@@ -25,6 +25,6 @@ jobs:
       - name: Build and publish NPM package
         run: |
           npm install
-          npm publish
+          npm publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
