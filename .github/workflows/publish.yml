@@ -1,4 +1,4 @@
-ame: Publish Package
+name: Publish Package
 
 on:
   release:
