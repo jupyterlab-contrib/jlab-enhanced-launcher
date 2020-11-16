@@ -278,10 +278,6 @@
   width: 100%;
 }
 
-.jp-NewLauncher-option-button:hover {
-  background: var(--jp-layout-color2);
-}
-
 .jp-NewLauncher-item:hover .jp-NewLauncher-options {
   background: var(--jp-layout-color2);
 }
