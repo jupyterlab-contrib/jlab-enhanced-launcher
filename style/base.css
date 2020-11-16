@@ -278,10 +278,6 @@
   width: 100%;
 }
 
-.jp-NewLauncher-option-button:hover {
-  background: var(--jp-layout-color2);
-}
-
 .jp-NewLauncher-item:hover .jp-NewLauncher-options {
   background: var(--jp-layout-color2);
 }
@@ -290,12 +286,16 @@
   background: transparent;
 }
 
-.jp-NewLauncher-option-button:nth-child(2) {
+.jp-NewLauncher-item .jp-NewLauncher-option-button:nth-child(2) {
   background: var(--jp-layout-color0);
 }
 
-.jp-NewLauncher-option-button:nth-child(2):hover {
-  background: var(--jp-layout-color2);
+.jp-NewLauncher-item:hover .jp-NewLauncher-option-button:nth-child(2) {
+  background: var(--jp-layout-color1);
+}
+
+.jp-NewLauncher-option-button:hover {
+  background: var(--jp-layout-color2) !important;
 }
 
 /* Icons, kernel icons */
