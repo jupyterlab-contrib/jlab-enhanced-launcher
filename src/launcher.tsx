@@ -702,7 +702,8 @@ namespace Private {
     const aCount = now - a.mostRecent < OLD_USAGE ? a.count : 0;
     const bCount = now - b.mostRecent < OLD_USAGE ? b.count : 0;
     if (aCount === bCount) {
-      return sortCmp(a, b, cwd, commands);
+      const mostRecent = b.mostRecent - a.mostRecent;
+      return mostRecent === 0 ? sortCmp(a, b, cwd, commands) : mostRecent;
     }
     return bCount - aCount;
   }
