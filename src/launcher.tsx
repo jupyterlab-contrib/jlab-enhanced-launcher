@@ -27,6 +27,8 @@ import {
 
 import { CommandRegistry } from '@lumino/commands';
 
+import { ReadonlyJSONObject } from '@lumino/coreutils';
+
 import { DisposableDelegate, IDisposable } from '@lumino/disposable';
 
 import { AttachedProperty } from '@lumino/properties';
@@ -34,6 +36,7 @@ import { AttachedProperty } from '@lumino/properties';
 import { Widget } from '@lumino/widgets';
 
 import * as React from 'react';
+
 import { viewListIcon, viewModuleIcon } from './icons';
 
 /**
@@ -251,16 +254,24 @@ export class Launcher extends VDomRenderer<LauncherModel> {
 
     const kernels = notebooks;
     consoles.forEach(console_ => {
+      const consoleName =
+        (console_[0].args['kernelPreference'] &&
+          (console_[0].args['kernelPreference'] as ReadonlyJSONObject)[
+            'name'
+          ]) ||
+        '';
       const consoleLabel = this._commands.label(
         console_[0].command,
         console_[0].args
       );
       const kernel = kernels.find(kernel => {
+        // kernel comes from notebook
+        const kernelName = kernel[0].args['kernelName'] || '';
         const kernelLabel = this._commands.label(
           kernel[0].command,
           kernel[0].args
         );
-        return kernelLabel === consoleLabel;
+        return kernelLabel === consoleLabel && kernelName === consoleName;
       });
       if (kernel) {
         kernel.push(console_[0]);
