@@ -1,5 +1,5 @@
-# development install of launcher
-.
+# install latest stable version of launcher
+@jlab-enhanced/launcher
 
 # some additional recommended labextensions, uncomment to enable
 # @jupyter-widgets/jupyterlab-manager
