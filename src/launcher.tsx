@@ -12,6 +12,8 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { ILauncher } from '@jupyterlab/launcher';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { IStateDB } from '@jupyterlab/statedb';
 
 import { classes, folderIcon, LabIcon } from '@jupyterlab/ui-components';
@@ -50,25 +52,10 @@ export const EXTENSION_ID = '@jlab-enhanced/launcher:plugin';
 const LAUNCHER_CLASS = 'jp-NewLauncher';
 
 /**
- * The known categories of launcher items and their default ordering.
- */
-const KNOWN_CATEGORIES = ['Kernels', 'Other'];
-
-/**
  * These launcher item categories are known to have kernels, so the kernel icons
  * are used.
  */
 const KERNEL_CATEGORIES = ['Notebook', 'Console'];
-
-/**
- * The maximum number of cards showed in recent section
- */
-const MAX_RECENT_CARDS = 4;
-
-/**
- * Time (in milliseconds) after which the usage is considered to old
- */
-const OLD_USAGE = 30 * 24 * 3600 * 1000;
 
 /**
  * IUsageData records the count of usage and the most recent date of usage
@@ -91,19 +78,66 @@ export interface IUsageData {
  * LauncherItems, which the Launcher will render.
  */
 export class LauncherModel extends VDomModel implements ILauncher {
-  constructor(state?: IStateDB) {
+  constructor(settings?: ISettingRegistry.ISettings, state?: IStateDB) {
     super();
+    this._settings = settings || null;
     this._state = state || null;
+
+    this.dispose();
   }
 
+  /**
+   * Generate an unique identifier for a launcher item
+   *
+   * @param item Launcher item
+   */
   static getItemUID(item: ILauncher.IItemOptions): string {
     return `${item.command}${JSON.stringify(item.args || {})}`;
   }
 
+  /**
+   * The known categories of launcher items and their default ordering.
+   */
+  get categories(): string[] {
+    if (this._settings) {
+      return this._settings.composite['categories'] as string[];
+    } else {
+      return ['Kernels', 'Other'];
+    }
+  }
+
+  /**
+   * The maximum number of cards showed in recent section
+   */
+  get nRecentCards(): number {
+    if (this._settings) {
+      return this._settings.composite['nRecentCards'] as number;
+    } else {
+      return 4;
+    }
+  }
+
+  /**
+   * Time (in milliseconds) after which the usage is considered to old
+   */
+  get maxUsageAge(): number {
+    let age = 30;
+    if (this._settings) {
+      age = this._settings.composite['maxUsageAge'] as number;
+    }
+    return age * 24 * 3600 * 1000;
+  }
+
+  /**
+   * Card usage data
+   */
   get usage(): { [cardId: string]: IUsageData } {
     return this._usageData;
   }
 
+  /**
+   * Launcher view mode
+   */
   get viewMode(): 'cards' | 'table' {
     return this._viewMode;
   }
@@ -140,12 +174,30 @@ export class LauncherModel extends VDomModel implements ILauncher {
     });
   }
 
+  /**
+   * Return an iterator of copied launcher items.
+   */
+  items(): IIterator<INewLauncher.IItemOptions> {
+    return new ArrayIterator(
+      this._items.map(item => {
+        const key = LauncherModel.getItemUID(item);
+        const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
+        return { ...item, ...usage };
+      })
+    );
+  }
+
+  /**
+   * Handle card usage data when used.
+   *
+   * @param item Launcher item
+   */
   useCard(item: ILauncher.IItemOptions): void {
     const id = LauncherModel.getItemUID(item);
     const usage = this._usageData[id];
     const now = Date.now();
     let currentCount = 0;
-    if (usage && now - usage.mostRecent < OLD_USAGE) {
+    if (usage && now - usage.mostRecent < this.maxUsageAge) {
       currentCount = usage.count;
     }
     this._usageData[id] = {
@@ -164,20 +216,8 @@ export class LauncherModel extends VDomModel implements ILauncher {
     }
   }
 
-  /**
-   * Return an iterator of copied launcher items.
-   */
-  items(): IIterator<INewLauncher.IItemOptions> {
-    return new ArrayIterator(
-      this._items.map(item => {
-        const key = LauncherModel.getItemUID(item);
-        const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
-        return { ...item, ...usage };
-      })
-    );
-  }
-
   private _items: ILauncher.IItemOptions[] = [];
+  private _settings: ISettingRegistry.ISettings | null = null;
   private _state: IStateDB | null = null;
   private _usageData: { [key: string]: IUsageData } = {};
   private _viewMode: 'cards' | 'table' = 'cards';
@@ -294,22 +334,28 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     const sections: React.ReactElement<any>[] = [];
 
     // Assemble the final ordered list of categories, beginning with
-    // KNOWN_CATEGORIES.
+    // model.categories.
     const orderedCategories: string[] = [];
-    each(KNOWN_CATEGORIES, (cat, index) => {
+    each(this.model.categories, (cat, index) => {
       if (cat in categories) {
         orderedCategories.push(cat);
       }
     });
     for (const cat in categories) {
-      if (KNOWN_CATEGORIES.indexOf(cat) === -1) {
+      if (this.model.categories.indexOf(cat) === -1) {
         orderedCategories.push(cat);
       }
     }
 
     const mostUsedItems = toArray(this.model.items()).sort(
       (a: INewLauncher.IItemOptions, b: INewLauncher.IItemOptions) => {
-        return Private.sortByUsage(a, b, this._cwd, this._commands);
+        return Private.sortByUsage(
+          a,
+          b,
+          this.model.maxUsageAge,
+          this._cwd,
+          this._commands
+        );
       }
     );
 
@@ -323,7 +369,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
             {toArray(
               map(
-                mostUsedItems.slice(0, MAX_RECENT_CARDS),
+                mostUsedItems.slice(0, this.model.nRecentCards),
                 (item: INewLauncher.IItemOptions) => {
                   return Card(
                     KERNEL_CATEGORIES.indexOf(item.category || 'Other') > -1,
@@ -410,7 +456,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
                   className="jp-NewLauncher-search-input"
                   spellCheck={false}
                   placeholder="SEARCH"
-                  onChange={event => {
+                  onChange={(event): void => {
                     this._searchInput = event.target.value || '';
                     this.update();
                   }}
@@ -432,7 +478,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
             <div className="jp-NewLauncher-view">
               <button
                 disabled={this.model.viewMode === 'cards'}
-                onClick={() => {
+                onClick={(): void => {
                   this.model.viewMode = 'cards';
                   this.update();
                 }}
@@ -445,7 +491,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
               </button>
               <button
                 disabled={this.model.viewMode === 'table'}
-                onClick={() => {
+                onClick={(): void => {
                   this.model.viewMode = 'table';
                   this.update();
                 }}
@@ -589,7 +635,7 @@ function Card(
 
   // With tabindex working, you can now pick a kernel by tabbing around and
   // pressing Enter.
-  const onkeypress = (event: React.KeyboardEvent) => {
+  const onkeypress = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
       mainOnClick(event);
     }
@@ -705,13 +751,14 @@ namespace Private {
   export function sortByUsage(
     a: INewLauncher.IItemOptions,
     b: INewLauncher.IItemOptions,
+    maxUsageAge: number,
     cwd: string,
     commands: CommandRegistry
   ): number {
     const now = Date.now();
 
-    const aCount = now - a.mostRecent < OLD_USAGE ? a.count : 0;
-    const bCount = now - b.mostRecent < OLD_USAGE ? b.count : 0;
+    const aCount = now - a.mostRecent < maxUsageAge ? a.count : 0;
+    const bCount = now - b.mostRecent < maxUsageAge ? b.count : 0;
     if (aCount === bCount) {
       const mostRecent = b.mostRecent - a.mostRecent;
       return mostRecent === 0 ? sortCmp(a, b, cwd, commands) : mostRecent;

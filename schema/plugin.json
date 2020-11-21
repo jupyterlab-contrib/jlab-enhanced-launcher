@@ -10,7 +10,28 @@
       "selector": "body"
     }
   ],
-  "properties": {},
+  "properties": {
+    "categories": {
+      "title": "Launcher categories in displayed order",
+      "description": "Absent categories will be appended.",
+      "default": ["Kernels", "Other"],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "maxUsageAge": {
+      "title": "Maximal age of the most recent use of a card (in days)",
+      "description": "If the latest use of a card is higher than maxUsageAge, the card will be considered as never used before.",
+      "default": 30,
+      "type": "number"
+    },
+    "nRecentCards": {
+      "title": "Number of recent cards to display",
+      "default": 4,
+      "type": "number"
+    }
+  },
   "additionalProperties": false,
   "type": "object"
 }
