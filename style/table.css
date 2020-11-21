@@ -39,6 +39,7 @@
 .jp-NewLauncher-Table-Cell.jp-NewLauncher-label {
   width: auto;
   height: auto;
+  font-size: var(--jp-ui-font-size1);
   text-align: left;
 } 
 

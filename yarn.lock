@@ -269,7 +269,7 @@
     node-fetch "^2.6.0"
     ws "^7.2.0"
 
-"@jupyterlab/settingregistry@^2.2.5":
+"@jupyterlab/settingregistry@^2.2.0", "@jupyterlab/settingregistry@^2.2.5":
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/@jupyterlab/settingregistry/-/settingregistry-2.2.5.tgz#665d2f5bfb601acd7020e2868f8bba1513d8c9cf"
   integrity sha512-LoKa27F1WNmeMT168TYo+MgjsYsVawKCZbmU7OGQS6h6J5dx0xQBQvE38NkhCsjnPYyUv4tYmGIFyHQceCDDaA==

@@ -10,6 +10,7 @@ import {
 import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
 
 import { ILauncher } from '@jupyterlab/launcher';
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IStateDB } from '@jupyterlab/statedb';
 
@@ -37,7 +38,7 @@ const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: EXTENSION_ID,
   requires: [ILabShell],
-  optional: [ICommandPalette, IStateDB],
+  optional: [ICommandPalette, ISettingRegistry, IStateDB],
   provides: ILauncher,
   autoStart: true
 };
@@ -50,15 +51,25 @@ export default plugin;
 /**
  * Activate the launcher.
  */
-function activate(
+async function activate(
   app: JupyterFrontEnd,
   labShell: ILabShell,
   palette: ICommandPalette | null,
+  settingRegistry: ISettingRegistry | null,
   state: IStateDB | null
-): ILauncher {
+): Promise<ILauncher> {
   const { commands } = app;
 
-  const model = new LauncherModel(state);
+  let settings: ISettingRegistry.ISettings | null = null;
+  if (settingRegistry) {
+    try {
+      settings = await settingRegistry.load(EXTENSION_ID);
+    } catch (reason) {
+      console.log(`Failed to load settings for ${EXTENSION_ID}.`, reason);
+    }
+  }
+
+  const model = new LauncherModel(settings, state);
 
   if (state) {
     Promise.all([
