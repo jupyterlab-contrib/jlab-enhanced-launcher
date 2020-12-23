@@ -1,6 +1,6 @@
 # @jlab-enhanced/launcher
 
-![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab)![npm](https://img.shields.io/npm/v/@jlab-enhanced/launcher)
+![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab) [![npm](https://img.shields.io/npm/v/@jlab-enhanced/launcher)](https://www.npmjs.com/package/@jlab-enhanced/launcher)
 
 A enhanced launcher for JupyterLab.
 
