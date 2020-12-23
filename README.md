@@ -1,4 +1,4 @@
-# launcher
+# @jlab-enhanced/launcher
 
 ![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg)[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab)
 
@@ -15,13 +15,20 @@ This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 ## Install
 
 ```bash
-jupyter labextension install @jlab-enhance/launcher
+jupyter labextension install @jlab-enhanced/launcher
 jupyter labextension disable @jupyterlab/launcher-extension
+```
+
+## Uninstall
+
+```bash
+jupyter labextension uninstall @jlab-enhanced/launcher
+jupyter labextension enable @jupyterlab/launcher-extension
 ```
 
 ## Contributing
 
-### Install
+### Development Install
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
@@ -54,10 +61,3 @@ jupyter lab --watch
 ```
 
 Now every change will be built locally and bundled into JupyterLab. Be sure to refresh your browser page after saving file changes to reload the extension (note: you'll need to wait for webpack to finish, which can take 10s+ at times).
-
-### Uninstall
-
-```bash
-jupyter labextension uninstall launcher
-jupyter labextension enable @jupyterlab/launcher-extension
-```
