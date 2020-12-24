@@ -39,7 +39,7 @@ import { Widget } from '@lumino/widgets';
 
 import * as React from 'react';
 
-import { viewListIcon, viewModuleIcon } from './icons';
+import { mostUsedIcon, viewListIcon, viewModuleIcon } from './icons';
 
 /**
  * Extension identifier
@@ -364,6 +364,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
       const mostUsedSection = (
         <div className="jp-NewLauncher-section" key="most-used">
           <div className="jp-NewLauncher-sectionHeader">
+            <mostUsedIcon.react stylesheet="launcherSection" />
             <h2 className="jp-NewLauncher-sectionTitle">Most Used</h2>
           </div>
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
