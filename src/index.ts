@@ -37,8 +37,7 @@ namespace CommandIDs {
 const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: EXTENSION_ID,
-  requires: [ILabShell],
-  optional: [ICommandPalette, ISettingRegistry, IStateDB],
+  optional: [ILabShell, ICommandPalette, ISettingRegistry, IStateDB],
   provides: ILauncher,
   autoStart: true
 };
@@ -53,12 +52,12 @@ export default plugin;
  */
 async function activate(
   app: JupyterFrontEnd,
-  labShell: ILabShell,
+  labShell: ILabShell | null,
   palette: ICommandPalette | null,
   settingRegistry: ISettingRegistry | null,
   state: IStateDB | null
 ): Promise<ILauncher> {
-  const { commands } = app;
+  const { commands, shell } = app;
 
   let settings: ISettingRegistry.ISettings | null = null;
   if (settingRegistry) {
@@ -94,7 +93,7 @@ async function activate(
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `launcher-${Private.id++}`;
       const callback = (item: Widget): void => {
-        labShell.add(item, 'main', { ref: id });
+        shell.add(item, 'main', { ref: id });
       };
       const launcher = new Launcher({ model, cwd, callback, commands });
 
@@ -105,15 +104,17 @@ async function activate(
       const main = new MainAreaWidget({ content: launcher });
 
       // If there are any other widgets open, remove the launcher close icon.
-      main.title.closable = !!toArray(labShell.widgets('main')).length;
+      main.title.closable = !!toArray(shell.widgets('main')).length;
       main.id = id;
 
-      labShell.add(main, 'main', { activate: args['activate'] as boolean });
+      shell.add(main, 'main', { activate: args['activate'] as boolean });
 
-      labShell.layoutModified.connect(() => {
-        // If there is only a launcher open, remove the close icon.
-        main.title.closable = toArray(labShell.widgets('main')).length > 1;
-      }, main);
+      if (labShell) {
+        labShell.layoutModified.connect(() => {
+          // If there is only a launcher open, remove the close icon.
+          main.title.closable = toArray(labShell.widgets('main')).length > 1;
+        }, main);
+      }
 
       return main;
     }
