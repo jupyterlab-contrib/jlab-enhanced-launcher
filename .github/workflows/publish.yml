@@ -22,13 +22,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install jupyterlab~=3.0 jupyter_packaging~=0.7.9 setuptools>=40.8.0 wheel twine
-      - name: Build and publish NPM package
+      - name: Build and publish package
         run: |
           jlpm
-          npm publish --access=public
-          
+
           python setup.py sdist bdist_wheel
           twine upload dist/*
+
+          npm publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           TWINE_USERNAME: __token__
