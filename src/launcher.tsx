@@ -8,6 +8,12 @@ import {
   VDomRenderer
 } from '@jupyterlab/apputils';
 
+import {
+  nullTranslator,
+  TranslationBundle,
+  ITranslator
+} from '@jupyterlab/translation';
+
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import { ILauncher } from '@jupyterlab/launcher';
@@ -232,10 +238,12 @@ export class Launcher extends VDomRenderer<LauncherModel> {
    */
   constructor(options: INewLauncher.IOptions) {
     super(options.model);
-    this.addClass(LAUNCHER_CLASS);
     this._cwd = options.cwd;
+    this.translator = options.translator || nullTranslator;
+    this._trans = this.translator.load('jupyterlab');
     this._callback = options.callback;
     this._commands = options.commands;
+    this.addClass(LAUNCHER_CLASS);
   }
 
   /**
@@ -365,7 +373,9 @@ export class Launcher extends VDomRenderer<LauncherModel> {
         <div className="jp-NewLauncher-section" key="most-used">
           <div className="jp-NewLauncher-sectionHeader">
             <mostUsedIcon.react stylesheet="launcherSection" />
-            <h2 className="jp-NewLauncher-sectionTitle">Most Used</h2>
+            <h2 className="jp-NewLauncher-sectionTitle">
+              {this._trans.__('Most Used')}
+            </h2>
           </div>
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
             {toArray(
@@ -377,6 +387,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
                     [item],
                     this,
                     this._commands,
+                    this._trans,
                     this._callback
                   );
                 }
@@ -412,7 +423,9 @@ export class Launcher extends VDomRenderer<LauncherModel> {
               iconClass={classes(iconClass, 'jp-Icon-cover')}
               stylesheet="launcherSection"
             />
-            <h2 className="jp-NewLauncher-sectionTitle">{cat}</h2>
+            <h2 className="jp-NewLauncher-sectionTitle">
+              {this._trans.__(cat)}
+            </h2>
           </div>
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
             {toArray(
@@ -436,6 +449,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
                   items,
                   this,
                   this._commands,
+                  this._trans,
                   this._callback
                 );
               })
@@ -511,11 +525,13 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     );
   }
 
+  protected translator: ITranslator;
   private _commands: CommandRegistry;
   private _callback: (widget: Widget) => void;
-  private _pending = false;
   private _cwd = '';
+  private _pending = false;
   private _searchInput = '';
+  private _trans: TranslationBundle;
 }
 
 /**
@@ -530,14 +546,22 @@ export namespace INewLauncher {
      * The model of the launcher.
      */
     model: LauncherModel;
+
     /**
      * The cwd of the launcher.
      */
     cwd: string;
+
     /**
      * The command registry used by the launcher.
      */
     commands: CommandRegistry;
+
+    /**
+     * The application language translation.
+     */
+    translator?: ITranslator;
+
     /**
      * The callback used when an item is launched.
      */
@@ -565,6 +589,7 @@ function Card(
   items: INewLauncher.IItemOptions[],
   launcher: Launcher,
   commands: CommandRegistry,
+  trans: TranslationBundle,
   launcherCallback: (widget: Widget) => void
 ): React.ReactElement<any> {
   const mode = launcher.model.viewMode === 'cards' ? '' : '-Table';
@@ -604,7 +629,7 @@ function Card(
         })
         .catch(err => {
           launcher.pending = false;
-          void showErrorMessage('Launcher Error', err);
+          void showErrorMessage(trans._p('Error', 'Launcher Error'), err);
         });
     };
 
