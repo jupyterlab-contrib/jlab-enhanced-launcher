@@ -14,6 +14,8 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { IStateDB } from '@jupyterlab/statedb';
 
+import { ITranslator } from '@jupyterlab/translation';
+
 import { launcherIcon } from '@jupyterlab/ui-components';
 
 import { toArray } from '@lumino/algorithm';
@@ -37,6 +39,7 @@ namespace CommandIDs {
 const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: EXTENSION_ID,
+  requires: [ITranslator],
   optional: [ILabShell, ICommandPalette, ISettingRegistry, IStateDB],
   provides: ILauncher,
   autoStart: true
@@ -52,12 +55,14 @@ export default plugin;
  */
 async function activate(
   app: JupyterFrontEnd,
+  translator: ITranslator,
   labShell: ILabShell | null,
   palette: ICommandPalette | null,
   settingRegistry: ISettingRegistry | null,
   state: IStateDB | null
 ): Promise<ILauncher> {
   const { commands, shell } = app;
+  const trans = translator.load('jupyterlab');
 
   let settings: ISettingRegistry.ISettings | null = null;
   if (settingRegistry) {
@@ -88,7 +93,7 @@ async function activate(
   }
 
   commands.addCommand(CommandIDs.create, {
-    label: 'New Launcher',
+    label: trans.__('New Launcher'),
     execute: (args: ReadonlyPartialJSONObject) => {
       const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `launcher-${Private.id++}`;
@@ -99,7 +104,7 @@ async function activate(
 
       launcher.model = model;
       launcher.title.icon = launcherIcon;
-      launcher.title.label = 'Launcher';
+      launcher.title.label = trans.__('Launcher');
 
       const main = new MainAreaWidget({ content: launcher });
 
@@ -121,7 +126,7 @@ async function activate(
   });
 
   if (palette) {
-    palette.addItem({ command: CommandIDs.create, category: 'Launcher' });
+    palette.addItem({ command: CommandIDs.create, category: trans.__('Launcher') });
   }
 
   return model;
