@@ -4,11 +4,12 @@ jlab_enhanced_launcher setup
 import json
 import os
 
+import setuptools
 from jupyter_packaging import (
     create_cmdclass, install_npm, ensure_targets,
     combine_commands, skip_if_exists
 )
-import setuptools
+from packaging.version import parse
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -17,7 +18,7 @@ name="jlab_enhanced_launcher"
 
 # Get our version
 with open(os.path.join(HERE, 'package.json')) as f:
-    version = json.load(f)['version']
+    version = str(parse(json.load(f)['version']))
 
 lab_path = os.path.join(HERE, name, "labextension")
 
@@ -27,7 +28,7 @@ jstargets = [
 ]
 
 package_data_spec = {
-    name: [
+    name.replace("_", "-"): [
         "*"
     ]
 }
@@ -70,6 +71,7 @@ setup_args = dict(
     packages=setuptools.find_packages(),
     install_requires=[
         "jupyterlab>=3.0.0rc13,==3.*",
+        "packaging"
     ],
     zip_safe=False,
     include_package_data=True,
@@ -84,6 +86,7 @@ setup_args = dict(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Framework :: Jupyter",
     ],
 )

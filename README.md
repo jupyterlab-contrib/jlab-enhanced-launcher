@@ -1,10 +1,10 @@
-# jlab_enhanced_launcher
+# jlab-enhanced-launcher
 
-![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher.git/master?urlpath=lab) [![npm](https://img.shields.io/npm/v/@jlab-enhanced/launcher)](https://www.npmjs.com/package/@jlab-enhanced/launcher)
+![Github Actions Status](https://github.com/fcollonval/jlab-enhanced-launcher/workflows/Build/badge.svg) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/fcollonval/jlab-enhanced-launcher/master?urlpath=lab) [![npm](https://img.shields.io/npm/v/@jlab-enhanced/launcher)](https://www.npmjs.com/package/@jlab-enhanced/launcher) [![PyPI](https://img.shields.io/pypi/v/jlab-enhanced-launcher)](https://pypi.org/project/jlab-enhanced-launcher)
 
 A enhanced launcher for JupyterLab.
 
-![Demo](enh_launcher.gif)
+![Demo](https://raw.githubusercontent.com/fcollonval/jlab-enhanced-launcher/master/enh_launcher.gif)
 
 This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
@@ -16,24 +16,28 @@ This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
 ```bash
 pip install jlab-enhanced-launcher
+jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
 or
 
 ```bash
 conda install jlab-enhanced-launcher
+jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
 ### Uninstall
 
 ```bash
 pip uninstall jlab-enhanced-launcher
+jupyter labextension enable @jupyterlab/launcher-extension
 ```
 
 or
 
 ```bash
 conda remove jlab-enhanced-launcher
+jupyter labextension enable @jupyterlab/launcher-extension
 ```
 
 ## Contributing
@@ -51,6 +55,7 @@ The `jlpm` command is JupyterLab's pinned version of
 # Change directory to the jlab_enhanced_launcher directory
 # Install package in development mode
 pip install -e .
+jupyter labextension disable @jupyterlab/launcher-extension
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
 # Rebuild extension Typescript source after making changes
