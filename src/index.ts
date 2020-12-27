@@ -126,7 +126,10 @@ async function activate(
   });
 
   if (palette) {
-    palette.addItem({ command: CommandIDs.create, category: trans.__('Launcher') });
+    palette.addItem({
+      command: CommandIDs.create,
+      category: trans.__('Launcher')
+    });
   }
 
   return model;
