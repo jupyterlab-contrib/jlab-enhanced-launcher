@@ -22,7 +22,7 @@ jupyter labextension disable @jupyterlab/launcher-extension
 or
 
 ```bash
-conda install jlab-enhanced-launcher
+conda install -c conda-forge jlab-enhanced-launcher
 jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
@@ -36,7 +36,7 @@ jupyter labextension enable @jupyterlab/launcher-extension
 or
 
 ```bash
-conda remove jlab-enhanced-launcher
+conda remove -c conda-forge jlab-enhanced-launcher
 jupyter labextension enable @jupyterlab/launcher-extension
 ```
 

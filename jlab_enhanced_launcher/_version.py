@@ -5,7 +5,7 @@ def _fetchVersion():
     import pathlib
     from packaging.version import parse
 
-    HERE = pathlib.Path(__file__).parent.absolute()
+    HERE = pathlib.Path(__file__).parent.resolve()
 
     for d in HERE.rglob('package.json'): 
         try:
