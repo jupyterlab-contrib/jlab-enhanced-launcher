@@ -75,7 +75,8 @@
   "styleModule": "style/index.js",
   "jupyterlab": {
     "extension": true,
-    "schemaDir": "schema",
-    "outputDir": "jlab_enhanced_launcher/labextension"
+    "disabledExtensions": ["@jupyterlab/launcher-extension"],
+    "outputDir": "jlab_enhanced_launcher/labextension",
+    "schemaDir": "schema"
   }
 }

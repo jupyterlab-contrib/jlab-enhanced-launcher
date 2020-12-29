@@ -16,28 +16,24 @@ This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
 ```bash
 pip install jlab-enhanced-launcher
-jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
 or
 
 ```bash
 conda install -c conda-forge jlab-enhanced-launcher
-jupyter labextension disable @jupyterlab/launcher-extension
 ```
 
 ### Uninstall
 
 ```bash
 pip uninstall jlab-enhanced-launcher
-jupyter labextension enable @jupyterlab/launcher-extension
 ```
 
 or
 
 ```bash
 conda remove -c conda-forge jlab-enhanced-launcher
-jupyter labextension enable @jupyterlab/launcher-extension
 ```
 
 ## Contributing
@@ -55,7 +51,6 @@ The `jlpm` command is JupyterLab's pinned version of
 # Change directory to the jlab_enhanced_launcher directory
 # Install package in development mode
 pip install -e .
-jupyter labextension disable @jupyterlab/launcher-extension
 # Link your development version of the extension with JupyterLab
 jupyter labextension develop . --overwrite
 # Rebuild extension Typescript source after making changes
