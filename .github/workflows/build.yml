@@ -28,7 +28,6 @@ jobs:
         jlpm
         jlpm run eslint:check
         python -m pip install .
-        jupyter labextension disable @jupyterlab/launcher-extension
 
         jupyter labextension list 2>&1 | grep -ie "@jlab-enhanced/launcher.*OK"
         python -m jupyterlab.browser_check
