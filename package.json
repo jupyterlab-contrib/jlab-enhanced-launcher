@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/fcollonval/jlab-enhanced-launcher",
+  "homepage": "https://github.com/jupyterlab-contrib/jlab-enhanced-launcher",
   "bugs": {
-    "url": "https://github.com/fcollonval/jlab-enhanced-launcher/issues"
+    "url": "https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/issues"
   },
   "license": "BSD-3-Clause",
   "author": "Frederic COLLONVAL",
@@ -24,7 +24,7 @@
   "style": "style/index.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fcollonval/jlab-enhanced-launcher.git"
+    "url": "https://github.com/jupyterlab-contrib/jlab-enhanced-launcher.git"
   },
   "scripts": {
     "build": "jlpm run build:lib && jlpm run build:labextension:dev",

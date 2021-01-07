@@ -62,7 +62,7 @@ with open("README.md", "r") as fh:
 setup_args = dict(
     name=name.replace("_", "-"),
     version=version,
-    url="https://github.com/fcollonval/jlab-enhanced-launcher.git",
+    url="https://github.com/jupyterlab-contrib/jlab-enhanced-launcher.git",
     author="Frederic COLLONVAL",
     description="A enhanced launcher for JupyterLab",
     long_description= long_description,
