@@ -649,6 +649,7 @@ function Card(
       return (
         <div
           className="jp-NewLauncher-option-button"
+          key={label.toLowerCase()}
           onClick={onClickFactory(item)}
         >
           <span className="jp-NewLauncher-option-button-text">
