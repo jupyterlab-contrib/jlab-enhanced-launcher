@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { IFavorites } from '@jlab-enhanced/favorites';
+import { IRecents } from '@jlab-enhanced/recents';
 import {
   ILabShell,
   JupyterFrontEnd,
@@ -16,15 +18,18 @@ import { IStateDB } from '@jupyterlab/statedb';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { launcherIcon } from '@jupyterlab/ui-components';
+//import { launcherIcon } from '@jupyterlab/ui-components';
 
 import { toArray } from '@lumino/algorithm';
 
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
-import { Widget } from '@lumino/widgets';
+//import { Widget } from '@lumino/widgets';
+import { ITourManager } from 'jupyterlab-tour';
 
-import { EXTENSION_ID, Launcher, LauncherModel } from './launcher';
+import { EXTENSION_ID, LauncherModel } from './launcher';
+
+import { WelcomePage } from "./welcome"
 
 /**
  * The command IDs used by the launcher plugin.
@@ -39,7 +44,7 @@ namespace CommandIDs {
 const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: EXTENSION_ID,
-  requires: [ITranslator],
+  requires: [ITranslator, IFavorites, IRecents, ITourManager],
   optional: [ILabShell, ICommandPalette, ISettingRegistry, IStateDB],
   provides: ILauncher,
   autoStart: true
@@ -56,6 +61,9 @@ export default plugin;
 async function activate(
   app: JupyterFrontEnd,
   translator: ITranslator,
+  favorites: IFavorites,
+  recents: IRecents,
+  tourManager: ITourManager,
   labShell: ILabShell | null,
   palette: ICommandPalette | null,
   settingRegistry: ISettingRegistry | null,
@@ -95,18 +103,23 @@ async function activate(
   commands.addCommand(CommandIDs.create, {
     label: trans.__('New Launcher'),
     execute: (args: ReadonlyPartialJSONObject) => {
-      const cwd = args['cwd'] ? String(args['cwd']) : '';
       const id = `launcher-${Private.id++}`;
+      /*
+      const cwd = args['cwd'] ? String(args['cwd']) : '';
       const callback = (item: Widget): void => {
         shell.add(item, 'main', { ref: id });
       };
-      const launcher = new Launcher({ model, cwd, callback, commands });
+      */
 
+      const welcome = new WelcomePage(favorites, recents, tourManager, commands);
+      //const launcher = new Launcher({ model, cwd, callback, commands });
+/*
       launcher.model = model;
       launcher.title.icon = launcherIcon;
       launcher.title.label = trans.__('Launcher');
-
-      const main = new MainAreaWidget({ content: launcher });
+*/
+      //const main = new MainAreaWidget({ content: launcher });
+      const main = new MainAreaWidget({ content: welcome });
 
       // If there are any other widgets open, remove the launcher close icon.
       main.title.closable = !!toArray(shell.widgets('main')).length;
