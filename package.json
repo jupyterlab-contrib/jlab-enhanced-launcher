@@ -86,6 +86,20 @@
     "disabledExtensions": [
       "@jupyterlab/launcher-extension"
     ],
+    "sharedPackages": {
+      "@jlab-enhanced/favorites": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jlab-enhanced/recents": {
+        "bundled": false,
+        "singleton": true
+      },
+      "jupyterlab-tour": {
+        "bundled": false,
+        "singleton": true
+      }
+    },
     "outputDir": "jlab_enhanced_launcher/labextension",
     "schemaDir": "schema"
   }

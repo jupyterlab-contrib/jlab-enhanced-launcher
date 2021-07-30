@@ -111,7 +111,7 @@ async function activate(
       };
       */
 
-      const welcome = new WelcomePage(favorites, recents, tourManager);
+      const welcome = new WelcomePage(favorites, recents, tourManager, commands);
       //const launcher = new Launcher({ model, cwd, callback, commands });
 /*
       launcher.model = model;
