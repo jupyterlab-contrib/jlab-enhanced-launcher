@@ -12,8 +12,12 @@ graft jlab_enhanced_launcher/labextension
 # Javascript files
 graft src
 graft style
+graft schema
 prune **/node_modules
 prune lib
+prune binder
+
+exclude enh_launcher.gif
 
 # Patterns to exclude from any directory
 global-exclude *~
