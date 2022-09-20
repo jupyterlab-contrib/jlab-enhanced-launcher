@@ -14,11 +14,9 @@ dependencies:
   - python >=3.8,<3.9.0a0
   - jupyterlab >=3,<4.0.0a0
   # labextension build dependencies
-  - nodejs >=14,<15
+  - nodejs =16
   - pip
   - wheel
+  - jupyter_packaging >=0.10,<2
   # Dependencies
   - packaging
-  # Fix binder
-  - parso >=0.8.0,<0.9.0
-  - jupyter_telemetry >=0.1.0
