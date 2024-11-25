@@ -283,7 +283,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
       [category: string]: INewLauncher.IItemOptions[][];
     } = Object.create(null);
     each(this.model.items(), (item, index) => {
-      const cat = item.category || 'Other';
+      const cat = item.category || this._trans.__('Other');
       if (!(cat in categories)) {
         categories[cat] = [];
       }
@@ -291,13 +291,13 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     });
 
     // Merge kernel items
-    const notebooks = categories['Notebook'];
+    const notebooks = categories[this._trans.__('Notebook')];
     if (notebooks) {
-      delete categories['Notebook'];
+      delete categories[this._trans.__('Notebook')];
     }
-    const consoles = categories['Console'];
+    const consoles = categories[this._trans.__('Console')];
     if (consoles) {
-      delete categories['Console'];
+      delete categories[this._trans.__('Console')];
     }
 
     const kernels = notebooks;
@@ -383,7 +383,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
                 mostUsedItems.slice(0, this.model.nRecentCards),
                 (item: INewLauncher.IItemOptions) => {
                   return Card(
-                    KERNEL_CATEGORIES.indexOf(item.category || 'Other') > -1,
+                    KERNEL_CATEGORIES.indexOf(item.category || this._trans.__('Other')) > -1,
                     [item],
                     this,
                     this._commands,
@@ -407,7 +407,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
 
       const item = categories[cat][0][0];
       const args = { ...item.args, cwd: this.cwd };
-      const kernel = cat === 'Kernels';
+      const kernel = cat === this._trans.__('Kernels');
 
       // DEPRECATED: remove _icon when lumino 2.0 is adopted
       // if icon is aliasing iconClass, don't use it
