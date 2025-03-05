@@ -1,3 +1,6 @@
+import json
+import pathlib
+
 try:
     from ._version import __version__
 except ImportError:
@@ -8,9 +11,13 @@ except ImportError:
     warnings.warn("Importing 'jlab_enhanced_launcher' outside a proper installation.")
     __version__ = "dev"
 
+HERE = pathlib.Path(__file__).parent.resolve()
+
+with (HERE / 'labextension' / 'package.json').open() as fid:
+    data = json.load(fid)
 
 def _jupyter_labextension_paths():
     return [{
-        "src": "labextension",
-        "dest": "@jlab-enhanced/launcher"
+        'src': 'labextension',
+        'dest': data['name']
     }]

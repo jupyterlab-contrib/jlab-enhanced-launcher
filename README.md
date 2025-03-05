@@ -1,4 +1,4 @@
-# jlab_enhanced_launcher
+# jlab-enhanced-launcher
 [![Extension status](https://img.shields.io/badge/status-ready-success "ready to be used")](https://jupyterlab-contrib.github.io/)
 [![Github Actions Status](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/workflows/Build/badge.svg)](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/actions?query=workflow%3ABuild)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jlab-enhanced-launcher/master?urlpath=lab)
@@ -21,7 +21,7 @@ This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 To install the extension, execute:
 
 ```bash
-pip install jlab_enhanced_launcher
+pip install jlab-enhanced-launcher
 ```
 or
 
@@ -34,7 +34,13 @@ conda install -c conda-forge jlab-enhanced-launcher
 To remove the extension, execute:
 
 ```bash
-pip uninstall jlab_enhanced_launcher
+pip uninstall jlab-enhanced-launcher
+```
+
+or
+
+```bash
+conda remove -c conda-forge jlab-enhanced-launcher
 ```
 
 ## Contributing
@@ -78,13 +84,13 @@ jupyter lab build --minimize=False
 ### Development uninstall
 
 ```bash
-pip uninstall jlab_enhanced_launcher
+pip uninstall jlab-enhanced-launcher
 ```
 
 or
 
 ```bash
-conda remove -c conda-forge jlab_enhanced_launcher
+conda remove -c conda-forge jlab-enhanced-launcher
 ```
 
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
