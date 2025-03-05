@@ -23,6 +23,11 @@ To install the extension, execute:
 ```bash
 pip install jlab_enhanced_launcher
 ```
+or
+
+```bash
+conda install -c conda-forge jlab-enhanced-launcher
+```
 
 ## Uninstall
 
