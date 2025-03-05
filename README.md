@@ -1,4 +1,5 @@
 # jlab-enhanced-launcher
+
 [![Extension status](https://img.shields.io/badge/status-ready-success "ready to be used")](https://jupyterlab-contrib.github.io/)
 [![Github Actions Status](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/workflows/Build/badge.svg)](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/actions?query=workflow%3ABuild)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jlab-enhanced-launcher/master?urlpath=lab)
