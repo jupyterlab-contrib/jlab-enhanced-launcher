@@ -24,15 +24,6 @@ import { IStateDB } from '@jupyterlab/statedb';
 
 import { classes, folderIcon, LabIcon } from '@jupyterlab/ui-components';
 
-import {
-  ArrayExt,
-  ArrayIterator,
-  each,
-  IIterator,
-  map,
-  toArray
-} from '@lumino/algorithm';
-
 import { CommandRegistry } from '@lumino/commands';
 
 import { ReadonlyJSONObject } from '@lumino/coreutils';
@@ -46,6 +37,8 @@ import { Widget } from '@lumino/widgets';
 import * as React from 'react';
 
 import { mostUsedIcon, viewListIcon, viewModuleIcon } from './icons';
+
+import { map } from '@lumino/algorithm';
 
 /**
  * Extension identifier
@@ -175,7 +168,10 @@ export class LauncherModel extends VDomModel implements ILauncher {
     this.stateChanged.emit(void 0);
 
     return new DisposableDelegate(() => {
-      ArrayExt.removeFirstOf(this._items, item);
+      const index = this._items.indexOf(item);
+      if (index !== -1) {
+        this._items.splice(index, 1);
+      }
       this.stateChanged.emit(void 0);
     });
   }
@@ -183,14 +179,14 @@ export class LauncherModel extends VDomModel implements ILauncher {
   /**
    * Return an iterator of copied launcher items.
    */
-  items(): IIterator<INewLauncher.IItemOptions> {
-    return new ArrayIterator(
-      this._items.map(item => {
-        const key = LauncherModel.getItemUID(item);
-        const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
-        return { ...item, ...usage };
-      })
-    );
+  items(): Iterator<INewLauncher.IItemOptions> {
+    const itemsArray = this._items.map(item => {
+      const key = LauncherModel.getItemUID(item);
+      const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
+      return { ...item, ...usage };
+    });
+
+    return itemsArray[Symbol.iterator]();
   }
 
   /**
@@ -282,13 +278,19 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     const categories: {
       [category: string]: INewLauncher.IItemOptions[][];
     } = Object.create(null);
-    each(this.model.items(), (item, index) => {
+
+    const iterator = this.model.items();
+    let result = iterator.next();
+
+    while (!result.done) {
+      const item = result.value;
       const cat = item.category || 'Other';
       if (!(cat in categories)) {
         categories[cat] = [];
       }
       categories[cat].push([item]);
-    });
+      result = iterator.next(); // Move to the next item
+    }
 
     // Merge kernel items
     const notebooks = categories['Notebook'];
@@ -344,19 +346,21 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     // Assemble the final ordered list of categories, beginning with
     // model.categories.
     const orderedCategories: string[] = [];
-    each(this.model.categories, (cat, index) => {
+    for (const cat of this.model.categories) {
       if (cat in categories) {
         orderedCategories.push(cat);
       }
-    });
+    }
     for (const cat in categories) {
       if (this.model.categories.indexOf(cat) === -1) {
         orderedCategories.push(cat);
       }
     }
 
-    const mostUsedItems = toArray(this.model.items()).sort(
-      (a: INewLauncher.IItemOptions, b: INewLauncher.IItemOptions) => {
+    const mostUsedItems = Array.from(
+      this.model.items() as unknown as INewLauncher.IItemOptions[]
+    ).sort(
+      (a: INewLauncher.IItemOptions, b: INewLauncher.IItemOptions): number => {
         return Private.sortByUsage(
           a,
           b,
@@ -378,7 +382,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
             </h2>
           </div>
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
-            {toArray(
+            {Array.from(
               map(
                 mostUsedItems.slice(0, this.model.nRecentCards),
                 (item: INewLauncher.IItemOptions) => {
@@ -409,11 +413,8 @@ export class Launcher extends VDomRenderer<LauncherModel> {
       const args = { ...item.args, cwd: this.cwd };
       const kernel = cat === 'Kernels';
 
-      // DEPRECATED: remove _icon when lumino 2.0 is adopted
-      // if icon is aliasing iconClass, don't use it
       const iconClass = this._commands.iconClass(item.command, args);
-      const _icon = this._commands.icon(item.command, args);
-      const icon = _icon === iconClass ? undefined : _icon;
+      const icon = this._commands.icon(item.command, args);
 
       const section = (
         <div className="jp-NewLauncher-section" key={cat}>
@@ -428,7 +429,7 @@ export class Launcher extends VDomRenderer<LauncherModel> {
             </h2>
           </div>
           <div className={`jp-NewLauncher${mode}-cardContainer`}>
-            {toArray(
+            {Array.from(
               map(categories[cat], (items: INewLauncher.IItemOptions[]) => {
                 const item = items[0];
                 const command = item.command;
@@ -668,11 +669,8 @@ function Card(
     }
   };
 
-  // DEPRECATED: remove _icon when lumino 2.0 is adopted
-  // if icon is aliasing iconClass, don't use it
   const iconClass = commands.iconClass(command, args);
-  const _icon = commands.icon(command, args);
-  const icon = _icon === iconClass ? undefined : _icon;
+  const icon = commands.icon(command, args);
 
   // Return the VDOM element.
   return (

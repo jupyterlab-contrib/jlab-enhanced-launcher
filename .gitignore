@@ -120,4 +120,4 @@ dmypy.json
 # Yarn cache
 .yarn/
 
-jlab_enhanced_launcher/_version.py
+./jlab_enhanced_launcher/_version.py
