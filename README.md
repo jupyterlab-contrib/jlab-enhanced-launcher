@@ -81,6 +81,12 @@ jupyter lab build --minimize=False
 pip uninstall jlab_enhanced_launcher
 ```
 
+or
+
+```bash
+conda remove -c conda-forge jlab_enhanced_launcher
+```
+
 In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `@jlab-enhanced/launcher` within that folder.
