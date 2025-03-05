@@ -1,6 +1,6 @@
 {
-  "title": "Launcher",
-  "description": "Launcher settings.",
+  "title": "@jlab-enhanced/launcher",
+  "description": "@jlab-enhanced/launcher settings.",
   "jupyter.lab.shortcuts": [
     {
       "command": "launcher:create",
