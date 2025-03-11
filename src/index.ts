@@ -18,8 +18,6 @@ import { ITranslator } from '@jupyterlab/translation';
 
 import { launcherIcon } from '@jupyterlab/ui-components';
 
-import { toArray } from '@lumino/algorithm';
-
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import { DockPanel, TabBar, Widget } from '@lumino/widgets';
@@ -109,7 +107,7 @@ async function activate(
       const main = new MainAreaWidget({ content: launcher });
 
       // If there are any other widgets open, remove the launcher close icon.
-      main.title.closable = !!toArray(shell.widgets('main')).length;
+      main.title.closable = !!Array.from(shell.widgets('main')).length;
       main.id = id;
 
       shell.add(main, 'main', {
@@ -120,7 +118,7 @@ async function activate(
       if (labShell) {
         labShell.layoutModified.connect(() => {
           // If there is only a launcher open, remove the close icon.
-          main.title.closable = toArray(labShell.widgets('main')).length > 1;
+          main.title.closable = Array.from(labShell.widgets('main')).length > 1;
         }, main);
       }
 

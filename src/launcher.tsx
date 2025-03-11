@@ -24,6 +24,8 @@ import { IStateDB } from '@jupyterlab/statedb';
 
 import { classes, folderIcon, LabIcon } from '@jupyterlab/ui-components';
 
+import { ArrayExt, map } from '@lumino/algorithm';
+
 import { CommandRegistry } from '@lumino/commands';
 
 import { ReadonlyJSONObject } from '@lumino/coreutils';
@@ -37,8 +39,6 @@ import { Widget } from '@lumino/widgets';
 import * as React from 'react';
 
 import { mostUsedIcon, viewListIcon, viewModuleIcon } from './icons';
-
-import { map } from '@lumino/algorithm';
 
 /**
  * Extension identifier
@@ -168,10 +168,7 @@ export class LauncherModel extends VDomModel implements ILauncher {
     this.stateChanged.emit(void 0);
 
     return new DisposableDelegate(() => {
-      const index = this._items.indexOf(item);
-      if (index !== -1) {
-        this._items.splice(index, 1);
-      }
+      ArrayExt.removeFirstOf(this._items, item);
       this.stateChanged.emit(void 0);
     });
   }
@@ -179,14 +176,14 @@ export class LauncherModel extends VDomModel implements ILauncher {
   /**
    * Return an iterator of copied launcher items.
    */
-  items(): Iterator<INewLauncher.IItemOptions> {
-    const itemsArray = this._items.map(item => {
-      const key = LauncherModel.getItemUID(item);
-      const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
-      return { ...item, ...usage };
-    });
-
-    return itemsArray[Symbol.iterator]();
+  items(): IterableIterator<INewLauncher.IItemOptions> {
+    return this._items
+      .map(item => {
+        const key = LauncherModel.getItemUID(item);
+        const usage = this._usageData[key] || { count: 0, mostRecent: 0 };
+        return { ...item, ...usage };
+      })
+      [Symbol.iterator]();
   }
 
   /**
@@ -278,19 +275,14 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     const categories: {
       [category: string]: INewLauncher.IItemOptions[][];
     } = Object.create(null);
-
-    const iterator = this.model.items();
-    let result = iterator.next();
-
-    while (!result.done) {
-      const item = result.value;
+    const itemsArray = [...this.model.items()];
+    itemsArray.forEach((item: any) => {
       const cat = item.category || 'Other';
       if (!(cat in categories)) {
         categories[cat] = [];
       }
       categories[cat].push([item]);
-      result = iterator.next(); // Move to the next item
-    }
+    });
 
     // Merge kernel items
     const notebooks = categories['Notebook'];
@@ -346,21 +338,19 @@ export class Launcher extends VDomRenderer<LauncherModel> {
     // Assemble the final ordered list of categories, beginning with
     // model.categories.
     const orderedCategories: string[] = [];
-    for (const cat of this.model.categories) {
+    this.model.categories.forEach(cat => {
       if (cat in categories) {
         orderedCategories.push(cat);
       }
-    }
+    });
     for (const cat in categories) {
       if (this.model.categories.indexOf(cat) === -1) {
         orderedCategories.push(cat);
       }
     }
 
-    const mostUsedItems = Array.from(
-      this.model.items() as unknown as INewLauncher.IItemOptions[]
-    ).sort(
-      (a: INewLauncher.IItemOptions, b: INewLauncher.IItemOptions): number => {
+    const mostUsedItems = Array.from(this.model.items()).sort(
+      (a: INewLauncher.IItemOptions, b: INewLauncher.IItemOptions) => {
         return Private.sortByUsage(
           a,
           b,
