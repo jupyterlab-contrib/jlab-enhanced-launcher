@@ -17,6 +17,9 @@ This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
 - JupyterLab >= 4.0.0
 
+For JupyterLab 3.x, have look [there](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/tree/3.x).
+For JupyterLab 2.x, have look [there](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/tree/2.x).
+
 ## Install
 
 To install the extension, execute:
