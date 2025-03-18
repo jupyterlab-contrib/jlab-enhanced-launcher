@@ -28,12 +28,12 @@
   background: var(--jp-layout-color0);
 }
 
-.jp-NewLauncher-item-Table:hover .jp-NewLauncher-option-button:nth-child(2) {
-  background: var(--jp-layout-color2);
-}
-
 .jp-NewLauncher-item-Table .jp-NewLauncher-option-button:hover {
   background: var(--jp-layout-color3) !important;
+}
+
+.jp-NewLauncher-item-Table:hover .jp-NewLauncher-option-button:nth-child(2) {
+  background: var(--jp-layout-color2);
 }
 
 .jp-NewLauncher-Table-Cell.jp-NewLauncher-label {
@@ -41,7 +41,7 @@
   height: auto;
   font-size: var(--jp-ui-font-size1);
   text-align: left;
-} 
+}
 
 .jp-NewLauncher-Table-Cell.jp-NewLauncher-options-wrapper {
   width: 25%;

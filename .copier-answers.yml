@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.3.8
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: ''
+author_name: Frederic COLLONVAL
+has_binder: true
+has_settings: true
+kind: frontend
+labextension_name: '@jlab-enhanced/launcher'
+project_short_description: A enhanced launcher for JupyterLab
+python_name: jlab_enhanced_launcher
+repository: https://github.com/jupyterlab-contrib/jlab-enhanced-launcher.git
+test: false
+
