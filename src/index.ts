@@ -6,22 +6,16 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-
 import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
-
+import { FileBrowserModel, IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 import { ILauncher } from '@jupyterlab/launcher';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-
 import { IStateDB } from '@jupyterlab/statedb';
-
 import { ITranslator } from '@jupyterlab/translation';
+import { addIcon, launcherIcon } from '@jupyterlab/ui-components';
 
-import { launcherIcon } from '@jupyterlab/ui-components';
-
-import { toArray } from '@lumino/algorithm';
-
+import { find } from '@lumino/algorithm';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
-
 import { DockPanel, TabBar, Widget } from '@lumino/widgets';
 
 import { EXTENSION_ID, Launcher, LauncherModel } from './launcher';
@@ -40,7 +34,13 @@ const plugin: JupyterFrontEndPlugin<ILauncher> = {
   activate,
   id: EXTENSION_ID,
   requires: [ITranslator],
-  optional: [ILabShell, ICommandPalette, ISettingRegistry, IStateDB],
+  optional: [
+    ILabShell,
+    ICommandPalette,
+    IDefaultFileBrowser,
+    ISettingRegistry,
+    IStateDB
+  ],
   provides: ILauncher,
   autoStart: true
 };
@@ -58,6 +58,7 @@ async function activate(
   translator: ITranslator,
   labShell: ILabShell | null,
   palette: ICommandPalette | null,
+  defaultBrowser: IDefaultFileBrowser | null,
   settingRegistry: ISettingRegistry | null,
   state: IStateDB | null
 ): Promise<ILauncher> {
@@ -94,13 +95,24 @@ async function activate(
 
   commands.addCommand(CommandIDs.create, {
     label: trans.__('New Launcher'),
+    icon: args => (args.toolbar ? addIcon : undefined),
     execute: (args: ReadonlyPartialJSONObject) => {
-      const cwd = args['cwd'] ? String(args['cwd']) : '';
+      const cwd = (args['cwd'] as string) ?? defaultBrowser?.model.path ?? '';
       const id = `launcher-${Private.id++}`;
-      const callback = (item: Widget): void => {
-        shell.add(item, 'main', { ref: id });
+      const callback = (item: Widget) => {
+        // If widget is attached to the main area replace the launcher
+        if (find(shell.widgets('main'), w => w === item)) {
+          shell.add(item, 'main', { ref: id });
+          launcher.dispose();
+        }
       };
-      const launcher = new Launcher({ model, cwd, callback, commands });
+      const launcher = new Launcher({
+        model,
+        cwd,
+        callback,
+        commands,
+        translator
+      });
 
       launcher.model = model;
       launcher.title.icon = launcherIcon;
@@ -109,7 +121,7 @@ async function activate(
       const main = new MainAreaWidget({ content: launcher });
 
       // If there are any other widgets open, remove the launcher close icon.
-      main.title.closable = !!toArray(shell.widgets('main')).length;
+      main.title.closable = !!Array.from(shell.widgets('main')).length;
       main.id = id;
 
       shell.add(main, 'main', {
@@ -120,13 +132,40 @@ async function activate(
       if (labShell) {
         labShell.layoutModified.connect(() => {
           // If there is only a launcher open, remove the close icon.
-          main.title.closable = toArray(labShell.widgets('main')).length > 1;
+          main.title.closable = Array.from(labShell.widgets('main')).length > 1;
         }, main);
+      }
+
+      if (defaultBrowser) {
+        const onPathChanged = (model: FileBrowserModel) => {
+          launcher.cwd = model.path;
+        };
+        defaultBrowser.model.pathChanged.connect(onPathChanged);
+        launcher.disposed.connect(() => {
+          defaultBrowser.model.pathChanged.disconnect(onPathChanged);
+        });
       }
 
       return main;
     }
   });
+
+  if (labShell) {
+    void Promise.all([app.restored, defaultBrowser?.model.restored]).then(
+      () => {
+        function maybeCreate() {
+          // Create a launcher if there are no open items.
+          if (labShell!.isEmpty('main')) {
+            void commands.execute(CommandIDs.create);
+          }
+        }
+        // When layout is modified, create a launcher if there are no open items.
+        labShell.layoutModified.connect(() => {
+          maybeCreate();
+        });
+      }
+    );
+  }
 
   if (palette) {
     palette.addItem({
@@ -135,17 +174,14 @@ async function activate(
     });
   }
 
-  if (labShell && app.version >= '3.4.0') {
+  if (labShell) {
     labShell.addButtonEnabled = true;
     labShell.addRequested.connect((sender: DockPanel, arg: TabBar<Widget>) => {
       // Get the ref for the current tab of the tabbar which the add button was clicked
       const ref =
         arg.currentTitle?.owner.id ||
         arg.titles[arg.titles.length - 1].owner.id;
-      if (commands.hasCommand('filebrowser:create-main-launcher')) {
-        // If a file browser is defined connect the launcher to it
-        return commands.execute('filebrowser:create-main-launcher', { ref });
-      }
+
       return commands.execute(CommandIDs.create, { ref });
     });
   }
