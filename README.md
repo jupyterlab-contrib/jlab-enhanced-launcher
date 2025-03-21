@@ -2,14 +2,14 @@
 
 [![Extension status](https://img.shields.io/badge/status-ready-success 'ready to be used')](https://jupyterlab-contrib.github.io/)
 [![Github Actions Status](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/workflows/Build/badge.svg)](https://github.com/jupyterlab-contrib/jlab-enhanced-launcher/actions?query=workflow%3ABuild)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jlab-enhanced-launcher/master?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jlab-enhanced-launcher/main?urlpath=lab)
 [![npm](https://img.shields.io/npm/v/@jlab-enhanced/launcher)](https://www.npmjs.com/package/@jlab-enhanced/launcher)
 [![PyPI](https://img.shields.io/pypi/v/jlab-enhanced-launcher)](https://pypi.org/project/jlab-enhanced-launcher)
 [![conda-forge](https://img.shields.io/conda/vn/conda-forge/jlab-enhanced-launcher)](https://anaconda.org/conda-forge/jlab-enhanced-launcher)
 
 A enhanced launcher for JupyterLab.
 
-![Demo](https://raw.githubusercontent.com/jupyterlab-contrib/jlab-enhanced-launcher/master/enh_launcher.gif)
+![Demo](https://raw.githubusercontent.com/jupyterlab-contrib/jlab-enhanced-launcher/main/enh_launcher.gif)
 
 This codes started from https://github.com/jupyterlab/jupyterlab/pull/5953.
 
