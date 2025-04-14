@@ -8,6 +8,15 @@
       "selector": "body"
     }
   ],
+  "jupyter.lab.toolbars": {
+    "FileBrowser": [
+      {
+        "name": "new-launcher",
+        "command": "launcher:create",
+        "rank": 1
+      }
+    ]
+  },
   "properties": {
     "categories": {
       "title": "Launcher categories in displayed order",
